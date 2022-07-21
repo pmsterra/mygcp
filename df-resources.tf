@@ -42,22 +42,31 @@ resource "google_storage_bucket_object" "temp_folder" {
   
 }
 
-# resource "google_dataflow_job" "testjob_df" {
-#   project = "my-test-1-355710"
-#   region = "us-central1"
-#   name = "testdf"
-#   template_gcs_path = "gs://df-store/word_count"
-#   temp_gcs_location = "gs://df-store/tmp_dir"
-#   parameters = {
-#     inputFile = "gs://df-store/kingliar.txt"
-#     output = "gs://df-store/output"
-#   }
-#   ip_configuration = "WORKER_IP_PRIVATE"
-#   labels = {
-#     "type" = "batchtype"
-#     "owner" = "pms"
-#   }
-# }
+
+resource "google_dataflow_job" "testjob_df" {
+  project = var.service_project
+  region = "us-central1"
+  name = "testdf"
+  template_gcs_path = "gs://pms-df-store/word_count"
+  temp_gcs_location = "gs://pms-df-store/tmp_dir"
+  service_account_email = "mytfe-249@my-service-project-357012.iam.gserviceaccount.com"
+  parameters = {
+    inputFile = "gs://pms-df-store/kingliar.txt"
+    output = "gs://pms-df-store/output"
+  }
+  ip_configuration = "WORKER_IP_PRIVATE"
+  labels = {
+    "type" = "batchtype"
+    "owner" = "pms"
+  }
+  
+  #network = "https://www.googleapis.com/compute/v1/projects/925822833165/global/networks/pms-network"
+  #subnetwork= "https://www.googleapis.com/compute/v1/projects/925822833165/regions/us-central1/subnetworks/pms-subnetwork"
+
+  network = "projects/925822833165/global/networks/pms-network"
+  subnetwork= "regions/us-central1/subnetworks/pms-subnetwork"
+
+}
 
 
 
