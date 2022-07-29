@@ -36,9 +36,16 @@ resource "google_storage_bucket_object" "df_classic_input" {
   
 }
 
+resource "google_storage_bucket_object" "df_flex_input" {
+  source = "./files/specliar.txt"
+  name = "specliar.txt"
+  bucket = google_storage_bucket.static-site.name
+  
+}
+
 resource "google_storage_bucket_object" "df_flex_spec" {
   source = "./files/spec"
-  name = "spec"
+  name = "spec_metadata"
   bucket = google_storage_bucket.static-site.name
   
 }
@@ -73,28 +80,31 @@ resource "google_storage_bucket_object" "temp_folder" {
 #   subnetwork= "regions/us-central1/subnetworks/pms-subnetwork"
 
 # }
-/*
+
 resource "google_dataflow_flex_template_job" "flex_df_job" {
   provider                = google-beta
   project = var.service_project
   region = "us-central1"
   name                    = "dataflow-flex-job"
-  container_spec_gcs_path = "gs://pms-df-store/spec"
+  container_spec_gcs_path = "gs://pms-df-store/wordcount.json"
   parameters = {
                        "input" = "gs://pms-df-store/specliar.txt"
                    "output"  = "gs://pms-df-store/output_flex"
                    "format" = "text"
                    service_account_email = "mytfe-249@my-service-project-357012.iam.gserviceaccount.com"
+                   network = "projects/925822833165/global/networks/pms-network"
+                   subnetwork= "regions/us-central1/subnetworks/pms-subnetwork"
+                   temp_location = "gs://pms-df-store/tmp_dir"
+                   
   }
 labels = {
-     "type" = "flex"
+    "type" = "flex"
      "owner" = "tikki"
    }
-    network = "projects/925822833165/global/networks/pms-network"
-    subnetwork= "regions/us-central1/subnetworks/pms-subnetwork"
+ 
 
 }
-*/
+
 
 
 

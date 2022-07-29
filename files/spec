@@ -1,5 +1,5 @@
 {
   "docker_template_spec": {
-    "docker_image": "gcr.io/my-service-project-357012/flex-template-python2-wc1"
+    "docker_image": "gcr.io/my-service-project-357012/flex-template-python2-wc1:latest"
   }
 }
