@@ -57,7 +57,7 @@ resource "google_storage_bucket_object" "temp_folder" {
   
 }
 
-
+#DF CLASSIC
 # resource "google_dataflow_job" "testjob_df" {
 #   project = var.service_project
 #   region = "us-central1"
@@ -81,29 +81,30 @@ resource "google_storage_bucket_object" "temp_folder" {
 
 # }
 
-resource "google_dataflow_flex_template_job" "flex_df_job" {
-  provider                = google-beta
-  project = var.service_project
-  region = "us-central1"
-  name                    = "dataflow-flex-job"
-  container_spec_gcs_path = "gs://pms-df-store/wordcount.json"
-  parameters = {
-                       "input" = "gs://pms-df-store/specliar.txt"
-                   "output"  = "gs://pms-df-store/output_flex"
-                   "format" = "text"
-                   service_account_email = "mytfe-249@my-service-project-357012.iam.gserviceaccount.com"
-                   network = "projects/925822833165/global/networks/pms-network"
-                   subnetwork= "regions/us-central1/subnetworks/pms-subnetwork"
-                   temp_location = "gs://pms-df-store/tmp_dir"
-                   
-  }
-labels = {
-    "type" = "flex"
-     "owner" = "tikki"
-   }
- 
 
-}
+# DF FLEX
+# resource "google_dataflow_flex_template_job" "flex_df_job" {
+#   provider                = google-beta
+#   project = var.service_project
+#   region = "us-central1"
+#   name                    = "dataflow-flex-job"
+#   container_spec_gcs_path = "gs://pms-df-store/wordcount.json"
+#   parameters = {
+#                        "input" = "gs://pms-df-store/specliar.txt"
+#                    "output"  = "gs://pms-df-store/output_flex"
+#                    "format" = "text"
+#                    service_account_email = "mytfe-249@my-service-project-357012.iam.gserviceaccount.com"
+#                    network = "projects/925822833165/global/networks/pms-network"
+#                    subnetwork= "regions/us-central1/subnetworks/pms-subnetwork"
+#                    temp_location = "gs://pms-df-store/tmp_dir"
+                   
+#   }
+#   labels = {
+#     "type" = "batchtype"
+#     "owner" = "pms"
+#   }
+
+# }
 
 
 

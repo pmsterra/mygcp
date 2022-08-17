@@ -15,3 +15,8 @@ provider "google" {
   region  = "us-central1"
 }
 
+# provider "cdap"  {
+#       #source  = "registry.terraform.io/googlecloudplatform/cdap"
+#       version = "~> 0.9.0"
+#       region  = "us-central1"
+#     }
