@@ -15,7 +15,7 @@ resource "google_kms_key_ring" "keyring" {
 
 
 resource "google_storage_bucket" "static-site" {
-  name          = "pms-df-store"
+  name          = "test-df-store"
   project = var.service_project
   force_destroy = true
   location      = "US"
@@ -57,54 +57,97 @@ resource "google_storage_bucket_object" "temp_folder" {
   
 }
 
+resource "google_storage_bucket_object" "staging_folder" {
+  content = "staging"
+  name = "staging_dir/"
+  bucket = google_storage_bucket.static-site.name
+  
+}
+
 #DF CLASSIC
 # resource "google_dataflow_job" "testjob_df" {
 #   project = var.service_project
 #   region = "us-central1"
 #   name = "testdf"
-#   template_gcs_path = "gs://pms-df-store/word_count"
-#   temp_gcs_location = "gs://pms-df-store/tmp_dir"
+#   template_gcs_path = "gs://test-df-store/word_count"
+#   temp_gcs_location = "gs://test-df-store/tmp_dir"
 #   service_account_email = "mytfe-249@my-service-project-357012.iam.gserviceaccount.com"
 #   parameters = {
-#     inputFile = "gs://pms-df-store/kingliar.txt"
-#     output = "gs://pms-df-store/output"
+#     inputFile = "gs://test-df-store/kingliar.txt"
+#     output = "gs://test-df-store/output"
 #   }
 #   ip_configuration = "WORKER_IP_PRIVATE"
 #   labels = {
 #     "type" = "batchtype"
-#     "owner" = "pms"
+#     "owner" = "test"
 #   }
- #   #network = "https://www.googleapis.com/compute/v1/projects/925822833165/global/networks/pms-network"
-#   #subnetwork= "https://www.googleapis.com/compute/v1/projects/925822833165/regions/us-central1/subnetworks/pms-subnetwork"
-#   network = "projects/925822833165/global/networks/pms-network"
-#   subnetwork= "regions/us-central1/subnetworks/pms-subnetwork"
+ #   #network = "https://www.googleapis.com/compute/v1/projects/12324343423/global/networks/test-network"
+#   #subnetwork= "https://www.googleapis.com/compute/v1/projects/12324343423/regions/us-central1/subnetworks/test-subnetwork"
+#   network = "projects/12324343423/global/networks/test-network"
+#   subnetwork= "regions/us-central1/subnetworks/test-subnetwork"
 
 # }
 
 
-# DF FLEX
+#DF FLEX
+# parameter option https://cloud.google.com/dataflow/docs/reference/pipeline-options
 # resource "google_dataflow_flex_template_job" "flex_df_job" {
 #   provider                = google-beta
 #   project = var.service_project
 #   region = "us-central1"
 #   name                    = "dataflow-flex-job"
-#   container_spec_gcs_path = "gs://pms-df-store/wordcount.json"
+#   container_spec_gcs_path = "gs://test-df-store/wordcount.json"
+  
 #   parameters = {
-#                        "input" = "gs://pms-df-store/specliar.txt"
-#                    "output"  = "gs://pms-df-store/output_flex"
+#                        "input" = "gs://test-df-store/specliar.txt"
+#                    "output"  = "gs://test-df-store/output_flex"
 #                    "format" = "text"
-#                    service_account_email = "mytfe-249@my-service-project-357012.iam.gserviceaccount.com"
-#                    network = "projects/925822833165/global/networks/pms-network"
-#                    subnetwork= "regions/us-central1/subnetworks/pms-subnetwork"
-#                    temp_location = "gs://pms-df-store/tmp_dir"
+#                    #service_account_email = "mytfe-249@my-service-project-357012.iam.gserviceaccount.com"
+#                    network = "projects/12324343423/global/networks/test-network"
+#                    subnetwork= "regions/us-central1/subnetworks/test-subnetwork"
+#                    #temp_location = "gs://test-df-store/tmp_dir"
+#                    #staging_location = "gs://test-df-store"
                    
+#                    worker_region = "us-central1"
+#                    #use_public_ips = "False"
+#                    no_use_public_ips = "True"
+#                    labels = "type=batchtype,dev=corp"
+    
+  
 #   }
-#   labels = {
-#     "type" = "batchtype"
-#     "owner" = "pms"
-#   }
+  
 
-# }
+#}
+
+
+resource "google_dataflow_flex_template_job" "dataflow_flex_template_job" {
+  provider = google-beta
+
+  project                 = var.service_project
+  name                    = "mytestflexpub"
+  container_spec_gcs_path = "gs://test-df-store/wordcount.json"
+  region                  = "us-central1"
+  on_delete               = "cancel"
+
+  parameters = {
+    service_account_email   = "newdf-936@my-service-project-357012.iam.gserviceaccount.com"
+    subnetwork              = "regions/us-central1/subnetworks/test-subnetwork"
+    #dataflow_kms_key        = var.kms_key_name
+    temp_location           = "gs://test-df-store/tmp_dir"
+    staging_location        = "gs://test-df-store/staging_dir"
+    max_num_workers         = 2
+    no_use_public_ips       = false
+    #enable_streaming_engine = true
+    worker_region = "us-central1"
+     "input" = "gs://test-df-store/specliar.txt"
+                    "output"  = "gs://test-df-store/output_flex"
+                   "format" = "text"
+  }
+
+
+}
+
+
 
 
 
